@@ -1,0 +1,6 @@
+[submodule "app/lib/utility"]
+	path = app/lib/utility
+	url = git@github.com:tbrasington/utility.git
+[submodule "app/lib/mcp"]
+	path = app/lib/mcp
+	url = git@github.com:tbrasington/mcp.git
