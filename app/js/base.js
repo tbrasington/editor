@@ -91,6 +91,8 @@ mcp.modules.editor.run = function(parent,options)  {
 			// is shift down?
 			var shift = false;
 			
+			
+			
 			// events for making sure our return and backspace work
 			editor_canvas.addEventListener('keydown', function(evt){
 				
@@ -101,26 +103,27 @@ mcp.modules.editor.run = function(parent,options)  {
 				
 				// return 
 				if(shift != true && evt.keyCode === 13 && current_element.classList.contains('content-wrapper')) {
+					
 					// if it is return, clone this element
 					evt.preventDefault();
 					
 					// insert a new tag based on the properties of the previous one
-					console.log(current_element.data.type)
 					var tag = inject_tag(current_element.data.type);
 					editor_canvas.insertBefore(tag,current_element.nextSibling);
 					
 					//focus the tag
 					tag.innerHTML = " ";
 					
-				    var rng = document.createRange();
+					var rng = document.createRange();
 				    rng.setStart(tag, 1);
 				    rng.setEnd(tag, 1);
-		
-				    var sel = document.getSelection();
+					
+					var sel = window.getSelection();
 				    sel.removeAllRanges();
 				    sel.addRange(rng);
-					
 				}
+				
+				
 				
 				// backspace 
 				if(evt.keyCode === 8 && evt.target.classList.contains('content-wrapper')) {
@@ -365,8 +368,7 @@ mcp.modules.editor.run = function(parent,options)  {
 					    var rng = document.createRange();
 					    rng.setStart(tag, 1);
 					    rng.setEnd(tag, 1);
-			
-					    var sel = document.getSelection();
+						var sel = window.getSelection();
 					    sel.removeAllRanges();
 					    sel.addRange(rng);
 						
@@ -454,7 +456,6 @@ mcp.modules.editor.run = function(parent,options)  {
 				elements.previous = elements.next.previousElementSibling;
 			}
 			
-			console.log(elements)
 			
 			return elements;
 		}
