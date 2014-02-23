@@ -213,8 +213,6 @@ mcp.modules.editor.run = function(parent,options)  {
 			
 			// create the bar
 			var bar = utility.element("div", { "class" : "editor-bar new-element-fade" });
-			editor_canvas.appendChild(bar);
-			
 			// where to put the element
 			if(position===0){
 			
@@ -440,12 +438,12 @@ mcp.modules.editor.run = function(parent,options)  {
 			}
 			
 			var child_nodes = editor_canvas.childNodes;
-			
+			console.log(child_nodes)
 			// loop through the child nodes to get the next element
 			for(var a =0, length = child_nodes.length; a<length; a++) {
 				
 				// we have the next element, 
-				if(child_nodes[a].offsetTop > mouse_y && elements.next===null) {
+				if(child_nodes[a].getBoundingClientRect().top > mouse_y && elements.next===null) {
 					elements.next = child_nodes[a];
 				}
 			}
@@ -455,6 +453,8 @@ mcp.modules.editor.run = function(parent,options)  {
 			if(elements.next && elements.next.previousElementSibling)  {
 				elements.previous = elements.next.previousElementSibling;
 			}
+			
+			console.log(elements)
 			
 			return elements;
 		}
