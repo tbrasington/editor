@@ -14,47 +14,29 @@ mcp.modules.editor.run = function(parent,options)  {
 		var container_size = {};
 		
 		// base container
-		var edtior_iframe = utility.element('iframe', { 'id' : name_space+'-container'});
-			
-		var editor_document = {};
+		var editor_canvas = utility.element('div', { 'id' : name_space+'-container'});
+			 
 	
 		demo.build = function() {
 					
 			
 			//  inject our container
-			parent.appendChild(edtior_iframe);
+			parent.appendChild(editor_canvas);
 			
 			
-			var start = utility.element('p', { "html" : "&nbsp;"});
-			 
-			editor_document = edtior_iframe.contentWindow.document;
-			editor_document.body.appendChild(start)
-			editor_document.designMode="on";
-			
-			
-			edtior_iframe.focus()
-   
-		  
-		    var rng = edtior_iframe.contentWindow.document.createRange();
-		    rng.setStart(start,1);
-		    rng.setEnd(start, 1);
-		    
-		    var sel = edtior_iframe.contentWindow.getSelection();
-		    sel.removeAllRanges();
-		    sel.addRange(rng);
-    
-
-			
+			//editor_document = editor_canvas.contentWindow.document;
+		//	editor_document.designMode="on";
+					  
+		
 			var iframe_css = document.createElement('link');
 			iframe_css.setAttribute("rel", "stylesheet");
 			iframe_css.setAttribute("charset", "utf-8");
 			iframe_css.setAttribute("type", 'text/css')
 			iframe_css.setAttribute('href', 'app/css/pure-editor.css');
-	
+
 			// inject to the head
-			editor_document.getElementsByTagName("head")[0].appendChild(iframe_css);
-			
-			//container.setAttribute("contenteditable",true);
+			document.getElementsByTagName("head")[0].appendChild(iframe_css);
+			 
 			
 			/*
 				Example specific code
@@ -72,57 +54,104 @@ mcp.modules.editor.run = function(parent,options)  {
 			/// observe, all of the time
 			window.addEventListener('resize', _.debounce(sizing,150));
 			
+			
 		}
 		
 		var events = function(){
 			
 			
-			// click events		
-			parent.addEventListener('click', function(evt){
-				
-			
-			});
-			
+			 
 			/* custom events */
-			editor_document.body.addEventListener('click', function(evt){
+			editor_canvas.addEventListener('click', function(evt){
 				
 				evt.stopPropagation();
 				
-				console.log(evt)
 				
-				if(evt.target.tagName==="BODY") { 
+				if(evt.target.id===name_space+'-container') { 
 					
 					// start with a normal appendChild
 					var position = 0;
 					
 					var target_y = evt.pageY || event.touches[0].pageY;
 					var elements = get_element_positions(target_y);
-					console.log(elements)
 					
 					if(elements.next) {
-						elements.next.innerHTML = 'next';
-						elements.next.classList.add('testfade');
 						
 						// there is an element before so we need to inject it there
 						position = 2;
 					}
-						
-					if(elements.previous) {
-						elements.previous.innerHTML = 'previous';
-						elements.previous.classList.add('testfade');
-					}
 					 
 					// inject a p tag
-					inject_tag(tag_type(9),position, elements);
+					inject_contextual_editor_bar(position, elements);
 					
 				}	
 				
 			});
+			
+			// is shift down?
+			var shift = false;
+			
+			// events for making sure our return and backspace work
+			editor_canvas.addEventListener('keydown', function(evt){
+				
+				var current_element = evt.target;
+				
+				// shift is being held -- probably
+				if(evt.keyCode===16) shift = true;
+				
+				// return 
+				if(shift != true && evt.keyCode === 13 && current_element.classList.contains('content-wrapper')) {
+					// if it is return, clone this element
+					evt.preventDefault();
+					
+					// insert a new tag based on the properties of the previous oone
+					var tag = inject_tag(current_element.data.id);
+					editor_canvas.insertBefore(tag,current_element.nextSibling);
+					
+					//focus the tag
+					tag.innerHTML = " ";
+					
+				    var rng = document.createRange();
+				    rng.setStart(tag, 1);
+				    rng.setEnd(tag, 1);
+		
+				    var sel = document.getSelection();
+				    sel.removeAllRanges();
+				    sel.addRange(rng);
+					
+				}
+				
+				// backspace 
+				if(evt.keyCode === 8 && evt.target.classList.contains('content-wrapper')) {
+					
+					evt.preventDefault();
+					
+					/*
+					if we are at the start of the string and the user hits backspace
+					take the content and move it to the the previous element
+					if there is one that is
+					*/
+					if(window.getSelection().baseOffset===0 && current_element.previousSibling !== null) {
+						
+						var text = current_element.innerHTML;
+						current_element.previousSibling.insertAdjacentHTML("beforeend",text);
+						
+						remove_content(current_element);
+					}
+					
+				}
+			});
+			
+			// need an exception if shift is being pressed
+			editor_canvas.addEventListener('keyup', function(evt){ 
+				shift = false;
+			});
+			
 		}
 		
 		var sizing = function(){
 			// get the size of our container
-			container_size = edtior_iframe.getBoundingClientRect();
+			container_size = editor_canvas.getBoundingClientRect();
 		}
 		
 		// tag types
@@ -166,9 +195,197 @@ mcp.modules.editor.run = function(parent,options)  {
 				case 9:
 					tag = 'img';
 				break;
+			
+				case 10:
+					tag = 'video';
+				break;
+				// container
+				case 11:
+					tag = 'div';
+				break;
 			}
 			
 			return tag;
+		}
+		
+		var inject_contextual_editor_bar = function(position,elements) {
+			
+			// create the bar
+			var bar = utility.element("div", { "class" : "editor-bar new-element-fade" });
+			editor_canvas.appendChild(bar);
+			
+			// where to put the element
+			if(position===0){
+			
+				editor_canvas.appendChild(bar)
+		
+			} else if(position===2){
+				editor_canvas.insertBefore(bar,elements.next);
+			}
+			
+		
+			// remove the fade 
+			bar.addEventListener(utility.animation('end'), function() {
+				
+				bar.classList.remove('new-element-fade');
+				
+			});
+			
+			// Menu options for the bar
+			var options = [
+				{
+					"name" : "Heading",
+					"variants" : [
+						{
+							"id" : 1,
+							"type" : "h1"
+						},
+						{
+							"id" : 2,
+							"type" : "h2"
+						},
+						{
+							"id" : 3,
+							"type" : "h3"
+						},
+						{
+							"id" : 4,
+							"type" : "h4"
+						},
+						{
+							"id" : 5,
+							"type" : "h5"
+						},
+	
+						{
+							"id" : 6,
+							"type" : "h6"
+						}
+					]
+				},
+				{
+					"name" : "Paragraph",
+					"id" : 7,
+					"type" : "p"
+				},
+				{
+					"name" : "Media",
+					"variants" : [
+						{
+							"id" : 9,
+							"type" : "img"
+						},
+						{
+							"id" : 10,
+							"type" : "video"
+						}
+					]
+				},
+				{
+					"name" : "Container",
+					"id" : 11,
+					"type" : "div"
+				}
+			];
+			
+			// inject our menu
+			for(var a = 0, length = options.length; a< length; a++) {
+				
+				var item = options[a];
+				
+				var menu_item = utility.element("div", { "class" : "menu-option" + (item.variants ? " variants " : ""), "html" : item.name });
+				
+				
+				// bind data to the item
+				menu_item.data = {};
+				if(item.id) menu_item.data['id'] = item.id;
+				if(item.type) menu_item.data['type'] = item.type;
+				
+				bar.appendChild(menu_item);
+				
+				// item has variants so add them
+				if(item.variants) {
+					
+					var item_variants = utility.element("div", { "class" : "menu-variants"});
+					menu_item.appendChild(item_variants);
+					
+					// add sub menu items
+					for(var b = 0, b_length = item.variants.length; b< b_length; b++) {
+				
+						// cache the options
+						var variant = item.variants[b];
+						
+						// inject the element
+						var variant_item = utility.element("div", { "class" : "menu-option", "html" : variant.type });
+						
+						// bind data to the item
+						variant_item.data = {};
+						variant_item.data['id'] = variant.id;
+						variant_item.data['type'] = variant.type;
+						
+						// append to the pop up menu
+						item_variants.appendChild(variant_item);
+					}
+
+				}
+			}
+		
+	
+			// Events for menu
+			bar.addEventListener("click", function(evt){
+				
+				
+				utility.event_delegate(evt, "menu-option", function() {
+				
+					var element = evt.target;
+					
+					// hide any menus that maybe open
+					var other_menus = bar.querySelectorAll('.menu-variants');
+					
+					_.each(other_menus, function(item){
+						item.classList.remove('show');
+					});
+					
+					// is a pop up
+					if(element.classList.contains('variants')) {
+						
+						var menu = evt.target.querySelector('.menu-variants');
+							menu.classList.add('show');
+					} 
+					
+					// is a tag injection
+					if(element.data.id && element.data.type) {
+						
+					
+						var tag = inject_tag(element.data.id);
+						editor_canvas.insertBefore(tag,bar);
+						
+						//focus the tag
+						tag.innerHTML = " ";
+						
+					    var rng = document.createRange();
+					    rng.setStart(tag, 1);
+					    rng.setEnd(tag, 1);
+			
+					    var sel = document.getSelection();
+					    sel.removeAllRanges();
+					    sel.addRange(rng);
+						
+						// remove the bar
+						bar.parentNode.removeChild(bar)
+					}
+					
+				});
+			
+			});
+			
+			
+		}
+		
+		
+		// inject a container
+		var inject_container = function() {
+			
 		}
 		
 		// Inject p tag
@@ -179,48 +396,39 @@ mcp.modules.editor.run = function(parent,options)  {
 				1 - afterend
 				2 -  beforebegin
 		*/
-		var inject_tag = function(type,position,elements) {
-			
+		var inject_tag = function(type) {
+
 			// create tag
-			var tag = utility.element(tag_type(type), { "class" : "testfade" });
+			var tag = utility.element("div", { "class" : "content-wrapper "+ tag_type(type) + " new-element-fade" });
 			
-			// where to put the elemtn
-			if(position===0){
 			
-				editor_document.body.appendChild(tag)
-		
-			} else if(position===2){
-				
-				editor_document.body.insertBefore(tag,elements.next);
-			
-			}
-			
-			tag.innerHTML = new Date().getTime();
+			tag.data = {};
+			tag.data.type = type;
 			
 			tag.addEventListener(utility.animation('end'), function() {
-				
-				tag.classList.remove('testfade');
-				
+
+				tag.classList.remove('new-element-fade');
+
 			})
-			
+
 			// focus the text area
 			tag.contentEditable = true;
 			
-			//focus the tag
-		    var rng = edtior_iframe.contentWindow.document.createRange();
-		    rng.setStart(tag, 1);
-		    rng.setEnd(tag, 1);
-		   
-		    var sel = edtior_iframe.contentWindow.getSelection();
-		    sel.removeAllRanges();
-		    sel.addRange(rng);
-		    
-	 
 			// xhr stuff
-			
+
 			// make it available for the calling function
 			return tag;
 		}
+		
+		
+		
+		// removes an element
+		var remove_content = function(element){ 
+		
+			// xhr stuff
+			element.parentNode.removeChild(element);
+		} 
+		
 		
 		// work out where all the elements on the page are
 		var get_element_positions = function(mouse_y) {
@@ -230,12 +438,13 @@ mcp.modules.editor.run = function(parent,options)  {
 				previous: null,
 			}
 			
-			var child_nodes = editor_document.body.childNodes;
+			var child_nodes = editor_canvas.childNodes;
+			
 			// loop through the child nodes to get the next element
 			for(var a =0, length = child_nodes.length; a<length; a++) {
 				
 				// we have the next element, 
-				if(child_nodes[a].offsetTop >mouse_y && elements.next===null) {
+				if(child_nodes[a].offsetTop > mouse_y && elements.next===null) {
 					elements.next = child_nodes[a];
 				}
 			}
@@ -252,6 +461,7 @@ mcp.modules.editor.run = function(parent,options)  {
 		
 		return demo;
 	}
+	
 	
 	var instance = demo();
 		instance.build();
