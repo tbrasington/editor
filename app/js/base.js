@@ -107,20 +107,26 @@ mcp.modules.editor.run = function(parent,options)  {
 					// if it is return, clone this element
 					evt.preventDefault();
 					
+					// text to take with the return
+					 var selection = current_element.innerHTML.substr(window.getSelection().baseOffset,current_element.innerHTML.length);
+				 	  
+					 current_element.innerHTML = current_element.innerHTML.substr(0,window.getSelection().baseOffset);
+					
 					// insert a new tag based on the properties of the previous one
 					var tag = inject_tag(current_element.data.type);
 					editor_canvas.insertBefore(tag,current_element.nextSibling);
 					
 					//focus the tag
-					tag.innerHTML = " ";
+					tag.innerHTML = selection;
 					
 					var rng = document.createRange();
-				    rng.setStart(tag, 1);
-				    rng.setEnd(tag, 1);
+				    rng.setStart(tag, 0);
+				    rng.setEnd(tag, 0);
 					
 					var sel = window.getSelection();
 				    sel.removeAllRanges();
 				    sel.addRange(rng);
+				    
 				}
 				
 				
@@ -138,8 +144,16 @@ mcp.modules.editor.run = function(parent,options)  {
 					if(window.getSelection().baseOffset===0 && current_element.previousSibling !== null) {
 						
 						var text = current_element.innerHTML;
+						
 						current_element.previousSibling.insertAdjacentHTML("beforeend",text);
 						
+						var rng = document.createRange();
+					    rng.setStart(current_element.previousSibling, 1);
+					 
+						var sel = window.getSelection();
+					    sel.removeAllRanges();
+					    sel.addRange(rng);
+					    
 						remove_content(current_element);
 					}
 					
@@ -410,11 +424,12 @@ mcp.modules.editor.run = function(parent,options)  {
 
 				tag.classList.remove('new-element-fade');
 
-			})
+			});
 
 			// focus the text area
 			tag.contentEditable = true;
 			
+					
 			// xhr stuff
 
 			// make it available for the calling function
@@ -440,7 +455,7 @@ mcp.modules.editor.run = function(parent,options)  {
 			}
 			
 			var child_nodes = editor_canvas.childNodes;
-			console.log(child_nodes)
+			
 			// loop through the child nodes to get the next element
 			for(var a =0, length = child_nodes.length; a<length; a++) {
 				
