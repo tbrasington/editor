@@ -104,8 +104,9 @@ mcp.modules.editor.run = function(parent,options)  {
 					// if it is return, clone this element
 					evt.preventDefault();
 					
-					// insert a new tag based on the properties of the previous oone
-					var tag = inject_tag(current_element.data.id);
+					// insert a new tag based on the properties of the previous one
+					console.log(current_element.data.type)
+					var tag = inject_tag(current_element.data.type);
 					editor_canvas.insertBefore(tag,current_element.nextSibling);
 					
 					//focus the tag
