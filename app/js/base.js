@@ -134,7 +134,6 @@ mcp.modules.editor.run = function(parent,options)  {
 				// backspace 
 				if(evt.keyCode === 8 && evt.target.classList.contains('content-wrapper')) {
 					
-					evt.preventDefault();
 					
 					/*
 					if we are at the start of the string and the user hits backspace
@@ -143,6 +142,8 @@ mcp.modules.editor.run = function(parent,options)  {
 					*/
 					if(window.getSelection().baseOffset===0 && current_element.previousSibling !== null) {
 						
+						evt.preventDefault();
+					
 						var text = current_element.innerHTML;
 						
 						current_element.previousSibling.insertAdjacentHTML("beforeend",text);
