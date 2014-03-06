@@ -87,29 +87,29 @@ h1,h2,h3,h4,h5,h6,ul,ol,p,code,img,video {
 }
 
 /* content type */
-.content-wrapper.h1 {
+.content-wrapper.h1-tag {
 	font-size: 28px;
 	line-height: 36px;
 	color: #3a3a3a;
 }
-.content-wrapper.h2 {
+.content-wrapper.h2-tag {
 	font-size: 22px;
 	line-height: 26px;
 	color: #3a3a3a;
 }
-.content-wrapper.h3 {
+.content-wrapper.h3-tag {
 	font-size: 18px;
 	line-height: 24px;
 	color: #3a3a3a;
 }
 
-.content-wrapper.h4 {
+.content-wrapper.h4-tag {
 	font-size: 16px;
 	line-height: 18px;
 	color: #3a3a3a;
 }
 
-.content-wrapper.ul, .content-wrapper.ol, .content-wrapper.p {
+.content-wrapper.ul-tag, .content-wrapper.ol-tag, .content-wrapper.p-tag {
 	font-size: 16px;
 	line-height: 24px;
 	min-height: 44px;
@@ -118,14 +118,14 @@ h1,h2,h3,h4,h5,h6,ul,ol,p,code,img,video {
 	-webkit-font-smoothing: antialiased;
 }
 
-.content-wrapper.ol  {
+.content-wrapper.ol-tag  {
 	list-style: decimal;
 	list-style-position: outside;
 	padding: 0 2.5%;
 
 }
 
-.content-wrapper.code {
+.content-wrapper.code-tag {
 	padding: 8px;
 	background: #f1f1f1;
 	font-family: monospace;
@@ -133,8 +133,8 @@ h1,h2,h3,h4,h5,h6,ul,ol,p,code,img,video {
 }
  
 
-.content-wrapper.code:before,
-.content-wrapper.code:after {
+.content-wrapper.code-tag:before,
+.content-wrapper.code-tag:after {
 	position: absolute;
 	width: 2.5%;
 	height: 100%;
@@ -143,6 +143,18 @@ h1,h2,h3,h4,h5,h6,ul,ol,p,code,img,video {
 	background: #F6F6F6;
 	content: '';
 }
+
+.content-wrapper.media-img-tag,
+.content-wrapper.media-video-tag {
+	min-height: 200px;
+	background: #fff;
+}
+
+.content-wrapper.container-tag { 
+	min-height: 200px;
+	background: #fff;
+}
+
 /* animations */
 .new-element-fade { 
 	-webkit-animation: new_element_fade 0.5s ease-out;
@@ -157,7 +169,7 @@ h1,h2,h3,h4,h5,h6,ul,ol,p,code,img,video {
 
 @media (min-width: 768px) {
 	
-	.content-wrapper.ul, .content-wrapper.ol, .content-wrapper.p {
+.content-wrapper.media-img-tag, .content-wrapper.ul-tag, .content-wrapper.ol-tag, .content-wrapper.p-tag {
 		width: 85%;
 	}
 }
@@ -165,7 +177,7 @@ h1,h2,h3,h4,h5,h6,ul,ol,p,code,img,video {
 
 @media (min-width: 900px) {
 	
-	.content-wrapper.ul,.content-wrapper.ol, .content-wrapper.p {
+.content-wrapper.media-img-tag, .content-wrapper.ul-tag,.content-wrapper.ol-tag, .content-wrapper.p-tag {
 		width: 65%;
 	}
 }

@@ -140,16 +140,19 @@ mcp.modules.editor.run = function(parent,options)  {
 					take the content and move it to the the previous element
 					if there is one that is
 					*/
-					if(window.getSelection().baseOffset===0 && current_element.previousSibling !== null) {
+					
+					var previous_sibling = current_element.previousSibling;
+					
+					if(window.getSelection().baseOffset===0 && previous_sibling.classList.contains('text') && previous_sibling !== null) {
 						
 						evt.preventDefault();
 					
 						var text = current_element.innerHTML;
 						
-						current_element.previousSibling.insertAdjacentHTML("beforeend",text);
+						previous_sibling.insertAdjacentHTML("beforeend",text);
 						
 						var rng = document.createRange();
-					    rng.setStart(current_element.previousSibling, 1);
+					    rng.setStart(previous_sibling, 1);
 					 
 						var sel = window.getSelection();
 					    sel.removeAllRanges();
@@ -212,15 +215,15 @@ mcp.modules.editor.run = function(parent,options)  {
 				break;
 				
 				case 9:
-					tag = 'img';
+					tag = 'media-img';
 				break;
 			
 				case 10:
-					tag = 'video';
+					tag = 'media-video';
 				break;
 				// container
 				case 11:
-					tag = 'div';
+					tag = 'container';
 				break;
 			}
 			
@@ -301,7 +304,7 @@ mcp.modules.editor.run = function(parent,options)  {
 				{
 					"name" : "Container",
 					"id" : 11,
-					"type" : "div"
+					"type" : "container"
 				}
 			];
 			
@@ -310,7 +313,7 @@ mcp.modules.editor.run = function(parent,options)  {
 				
 				var item = options[a];
 				
-				var menu_item = utility.element("div", { "class" : "menu-option" + (item.variants ? " variants " : ""), "html" : item.name });
+				var menu_item = utility.element("div", { "class" : "menu-option" + (item.variants ? " variants " : "") , "html" : item.name });
 				
 				
 				// bind data to the item
@@ -415,7 +418,7 @@ mcp.modules.editor.run = function(parent,options)  {
 		var inject_tag = function(type) {
 
 			// create tag
-			var tag = utility.element("div", { "class" : "content-wrapper "+ tag_type(type) + " new-element-fade" });
+			var tag = utility.element("div", { "class" : "content-wrapper "+ tag_type(type) + "-tag " + " new-element-fade" });
 			
 			
 			tag.data = {};
@@ -426,10 +429,21 @@ mcp.modules.editor.run = function(parent,options)  {
 				tag.classList.remove('new-element-fade');
 
 			});
-
-			// focus the text area
-			tag.contentEditable = true;
 			
+			// if it is a rich asset tag, don't make it editable
+			if(type=== 9 || type=== 10 || type=== 11) {
+				
+				// if its an image or video show that
+				
+				// if its a container, well new stuff
+				
+			} else {
+				// it is text so you can edit it
+				tag.contentEditable = true;
+				
+				// text class is used so we know when editing, we input text, particularly around backspace
+				tag.classList.add('text');
+			}
 					
 			// xhr stuff
 
