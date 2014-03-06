@@ -23,11 +23,7 @@ mcp.modules.editor.run = function(parent,options)  {
 			//  inject our container
 			parent.appendChild(editor_canvas);
 			
-			
-			//editor_document = editor_canvas.contentWindow.document;
-		//	editor_document.designMode="on";
-					  
-		
+
 			var iframe_css = document.createElement('link');
 			iframe_css.setAttribute("rel", "stylesheet");
 			iframe_css.setAttribute("charset", "utf-8");
@@ -67,7 +63,7 @@ mcp.modules.editor.run = function(parent,options)  {
 				evt.stopPropagation();
 				
 				
-				if(evt.target.id===name_space+'-container') { 
+				if(evt.target.id === name_space+'-container') { 
 					
 					// start with a normal appendChild
 					var position = 0;
@@ -88,9 +84,6 @@ mcp.modules.editor.run = function(parent,options)  {
 				
 			});
 			
-			// is shift down?
-			var shift = false;
-			
 			
 			
 			// events for making sure our return and backspace work
@@ -102,7 +95,7 @@ mcp.modules.editor.run = function(parent,options)  {
 				if(evt.keyCode===16) shift = true;
 				
 				// return 
-				if(shift != true && evt.keyCode === 13 && current_element.classList.contains('content-wrapper')) {
+				if(evt.shiftKey != true && evt.keyCode === 13 && current_element.classList.contains('content-wrapper')) {
 					
 					// if it is return, clone this element
 					evt.preventDefault();
@@ -133,8 +126,7 @@ mcp.modules.editor.run = function(parent,options)  {
 				
 				// backspace 
 				if(evt.keyCode === 8 && evt.target.classList.contains('content-wrapper')) {
-					
-					
+						
 					/*
 					if we are at the start of the string and the user hits backspace
 					take the content and move it to the the previous element
@@ -163,12 +155,6 @@ mcp.modules.editor.run = function(parent,options)  {
 					
 				}
 			});
-			
-			// need an exception if shift is being pressed
-			editor_canvas.addEventListener('keyup', function(evt){ 
-				shift = false;
-			});
-			
 		}
 		
 		var sizing = function(){
