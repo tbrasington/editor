@@ -346,9 +346,10 @@ mcp.modules.editor.run = function(parent,options)  {
 					var element = evt.target;
 					
 					// hide any menus that maybe open
-					var other_menus = bar.querySelectorAll('.menu-variants');
+					var other_menus = parent.querySelectorAll('.menu-variants.show');
 					
 					_.each(other_menus, function(item){
+					 	
 						item.classList.remove('show');
 					});
 					
@@ -379,12 +380,8 @@ mcp.modules.editor.run = function(parent,options)  {
 						// remove the bar
 						bar.parentNode.removeChild(bar)
 					}
-					
 				});
-			
 			});
-			
-			
 		}
 		
 		

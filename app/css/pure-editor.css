@@ -26,6 +26,19 @@ input, textarea {
 .show { display: block !important; }
 .hide { display: none !important; }
 
+
+/* core ui */
+#editor-container {
+	position: relative;
+	float: left;
+	width: 100%;
+	height: auto;
+	min-height: 100%;
+	padding: 0;
+	margin: 0;
+}
+
+
 .editor-bar,
 .content-wrapper,
 h1,h2,h3,h4,h5,h6,ul,ol,p,code,img,video {
@@ -74,6 +87,7 @@ h1,h2,h3,h4,h5,h6,ul,ol,p,code,img,video {
 	left:0px;
 	background: #f6f6f6;
 	display: none;
+	z-index: 2;
 }
 
 .menu-variants .menu-option {
@@ -167,17 +181,22 @@ h1,h2,h3,h4,h5,h6,ul,ol,p,code,img,video {
 }
 	
 
-@media (min-width: 768px) {
+@media screen and (min-width: 768px) {
 	
-.content-wrapper.media-img-tag, .content-wrapper.ul-tag, .content-wrapper.ol-tag, .content-wrapper.p-tag {
+	#editor-container { 
 		width: 85%;
+		margin: 0 7.5%;
 	}
+
 }
 
 
-@media (min-width: 900px) {
+@media screen and (min-width: 900px) {
 	
-.content-wrapper.media-img-tag, .content-wrapper.ul-tag,.content-wrapper.ol-tag, .content-wrapper.p-tag {
-		width: 65%;
+
+	#editor-container { 
+		width: 65%; 
+		margin: 0 17.5%;
 	}
+	
 }
