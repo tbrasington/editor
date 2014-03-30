@@ -1,14 +1,10 @@
-mcp.modules.editor.run = function(parent,options)  {
- 
-	console.log('editor run');
-	
-	var demo = function() {
-		
-		var demo = this;	
+var editor = function(parent,options)  {
+ 		
+		var that = this;	
 		
 		var name_space = 'editor'; 
 		
-		var parsed_options = JSON.parse(options) || {};
+		var parsed_options = (options !== undefined ? JSON.parse(options) : {}) || {};
 
 		// how big the container element is
 		var container_size = {};
@@ -17,7 +13,7 @@ mcp.modules.editor.run = function(parent,options)  {
 		var editor_canvas = utility.element('div', { 'id' : name_space+'-container'});
 			 
 	
-		demo.build = function() {
+		that.build = function() {
 					
 			
 			//  inject our container
@@ -474,12 +470,8 @@ mcp.modules.editor.run = function(parent,options)  {
 		}
 		
 		
-		return demo;
-	}
+		return that;
 	
-	
-	var instance = demo();
-		instance.build();
 	
 
 }

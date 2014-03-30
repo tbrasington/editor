@@ -6,22 +6,21 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
 <meta name="viewport" content="width = device-width, initial-scale = 1.0 ,  minimum-scale = 1.0,  maximum-scale=1.0">
 
-
-<script type="text/javascript" src="app/lib/utility/utility.js"></script>
+ 
 <script type="text/javascript" src="app/lib/mcp/mcp.js"></script>
  
 </head>
 <body>
 
-<div id="container">
-		
-</div>
+<div id="container"></div>
 
 
 
 
 <script type="text/javascript">
 document.addEventListener("DOMContentLoaded", function() {
+
+	var cms_app = mcp();
 
 	var files_needed =  [
 		{
@@ -36,8 +35,8 @@ document.addEventListener("DOMContentLoaded", function() {
 		}
 	];
 	
-	
-	mcp.modules = {
+		
+	cms_app.modules = {
 		
 		"editor" : [{
 			"loaded" : false,
@@ -57,12 +56,15 @@ document.addEventListener("DOMContentLoaded", function() {
 	};
 
 
-	mcp.loader(files_needed, function() { 
+	cms_app.loader(files_needed, function() { 
 		
-		mcp.load_module("editor", null, document.getElementById('container'));
-	
+		cms_app.load_module("editor", function() {
+			
+			cms_app.modules["editor"].instance = editor(document.getElementById('container'));
+			cms_app.modules["editor"].instance.build();
+			
+		});
 	});
-
 });
 </script>
 
